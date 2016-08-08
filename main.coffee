@@ -18,12 +18,11 @@ aceShim = require("./ace-shim")()
 
 global.editor = aceShim.aceEditor()
 editor.setSession aceShim.initSession "alert 'hello'", "coffee"
+editor.focus()
 
 Postmaster = require "postmaster"
-
 postmaster = Postmaster()
-
-postmaster.invokeRemote('childLoaded')
+postmaster.invokeRemote('ready')
 
 execWithContext = (program, context={}) ->
   module = context.module ? {}
