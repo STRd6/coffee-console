@@ -3,13 +3,13 @@ style.innerHTML = require "./style"
 
 document.head.appendChild style
 
-editor = document.createElement "div"
-editor.id = "ace"
-document.body.appendChild editor
+Template = require("./template")
+document.body.appendChild Template()
 
 aceShim = require("./ace-shim")()
 
-aceShim.initSession "alert 'hello'", "coffee"
+global.editor = aceShim.aceEditor()
+editor.setSession aceShim.initSession "alert 'hello'", "coffee"
 
 Postmaster = require "postmaster"
 
