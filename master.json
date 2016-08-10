@@ -12,46 +12,51 @@
       "mode": "100644",
       "type": "blob"
     },
+    "ace-shim.coffee": {
+      "path": "ace-shim.coffee",
+      "content": "ace.require(\"ace/ext/language_tools\")\n\naceEditor = ace.edit \"ace\"\naceEditor.$blockScrolling = Infinity\naceEditor.setOptions\n  fontSize: \"16px\"\n  enableBasicAutocompletion: true\n  enableLiveAutocompletion: true\n\nmodule.exports = ->\n  aceEditor: ->\n    aceEditor\n\n  initSession: (content, mode) ->\n    session = ace.createEditSession(content)\n\n    session.setMode(\"ace/mode/#{mode}\")\n\n    session.setUseSoftTabs true\n    session.setTabSize 2\n\n    aceEditor.setOptions\n      highlightActiveLine: true\n\n    # # Filetree observable binding\n    # updating = false\n    # file.content.observe (newContent) ->\n    #   return if updating\n\n    #   session.setValue newContent\n\n    # # Bind session and file content\n    # session.on \"change\", ->\n    #   updating = true\n    #   file.content session.getValue()\n    #   updating = false\n\n    return session\n",
+      "mode": "100644",
+      "type": "blob"
+    },
     "main.coffee": {
       "path": "main.coffee",
-      "content": "style = document.createElement 'style'\nstyle.innerHTML = require \"./style\"\n\ndocument.head.appendChild style\n\nTemplate = require(\"./template\")\ndocument.body.appendChild Template\n  run: ->\n    program = CoffeeScript.compile editor.getValue(), bare: true\n    console.log program\n    execWithContext program, \n      module:\n        remote: remoteProxy\n\n    Function()\n\naceShim = require(\"./ace-shim\")()\n\nglobal.editor = aceShim.aceEditor()\neditor.setSession aceShim.initSession \"alert 'hello'\", \"coffee\"\neditor.focus()\n\nPostmaster = require \"postmaster\"\npostmaster = Postmaster()\npostmaster.invokeRemote('ready')\n\nexecWithContext = (program, context={}) ->\n  module = context.module ? {}\n\n  args = Object.keys(context)\n  values = args.map (name) -> context[name]\n\n  Function(args..., program).apply(module, values)\n\nremoteProxy = new Proxy postmaster,\n  get: (target, property, receiver) ->\n    target[property] or\n    (args...) ->\n      target.invokeRemote property, args...\n",
-      "mode": "100644"
+      "content": "style = document.createElement 'style'\nstyle.innerHTML = require \"./style\"\n\ndocument.head.appendChild style\n\nTemplate = require(\"./template\")\ndocument.body.appendChild Template\n  run: ->\n    program = CoffeeScript.compile editor.getValue(), bare: true\n    console.log program\n    execWithContext program,\n      module: remoteProxy\n\n    Function()\n\naceShim = require(\"./ace-shim\")()\n\nglobal.editor = aceShim.aceEditor()\neditor.setSession aceShim.initSession \"alert 'hello'\", \"coffee\"\neditor.focus()\n\nPostmaster = require \"postmaster\"\npostmaster = Postmaster()\npostmaster.invokeRemote('ready')\n\nexecWithContext = (program, context={}) ->\n  module = context.module ? {}\n\n  args = Object.keys(context)\n  values = args.map (name) -> context[name]\n\n  Function(args..., program).apply(module, values)\n\nremoteProxy = new Proxy postmaster,\n  get: (target, property, receiver) ->\n    target[property] or\n    (args...) ->\n      target.invokeRemote property, args...\n",
+      "mode": "100644",
+      "type": "blob"
     },
     "pixie.cson": {
       "path": "pixie.cson",
       "content": "title: \"Coffee Console\"\ndescription: \"\"\"\n  An embeddable CoffeeScirpt console.\n\"\"\"\nversion: \"0.1.0\"\nentryPoint: \"main\"\nremoteDependencies: [\n  \"https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.4/ace.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.4/ext-language_tools.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js\"\n]\ndependencies:\n  postmaster: \"distri/postmaster:v0.5.0\"\n",
-      "mode": "100644"
-    },
-    "ace-shim.coffee": {
-      "path": "ace-shim.coffee",
-      "content": "ace.require(\"ace/ext/language_tools\")\n\naceEditor = ace.edit \"ace\"\naceEditor.$blockScrolling = Infinity\naceEditor.setOptions\n  fontSize: \"16px\"\n  enableBasicAutocompletion: true\n  enableLiveAutocompletion: true\n\nmodule.exports = ->\n  aceEditor: ->\n    aceEditor\n\n  initSession: (content, mode) ->\n    session = ace.createEditSession(content)\n\n    session.setMode(\"ace/mode/#{mode}\")\n\n    session.setUseSoftTabs true\n    session.setTabSize 2\n\n    aceEditor.setOptions\n      highlightActiveLine: true\n\n    # # Filetree observable binding\n    # updating = false\n    # file.content.observe (newContent) ->\n    #   return if updating\n\n    #   session.setValue newContent\n\n    # # Bind session and file content\n    # session.on \"change\", ->\n    #   updating = true\n    #   file.content session.getValue()\n    #   updating = false\n\n    return session\n",
-      "mode": "100644"
+      "mode": "100644",
+      "type": "blob"
     },
     "style.styl": {
       "path": "style.styl",
       "content": "html, body, #ace, application\n  height: 100%\n\napplication\n  display: block\n\nbody\n  font-family: \"HelveticaNeue-Light\", \"Helvetica Neue Light\", \"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif\n  font-weight: 300\n  margin: 0\n\nbutton.run\n  position: absolute\n  top: 8px\n  right: 8px\n  z-index: 1\n",
-      "mode": "100644"
+      "mode": "100644",
+      "type": "blob"
     },
     "template.jadelet": {
       "path": "template.jadelet",
       "content": "application\n  #ace\n  button.run(click=@run) Run\n",
-      "mode": "100644"
+      "mode": "100644",
+      "type": "blob"
     }
   },
   "distribution": {
+    "ace-shim": {
+      "path": "ace-shim",
+      "content": "(function() {\n  var aceEditor;\n\n  ace.require(\"ace/ext/language_tools\");\n\n  aceEditor = ace.edit(\"ace\");\n\n  aceEditor.$blockScrolling = Infinity;\n\n  aceEditor.setOptions({\n    fontSize: \"16px\",\n    enableBasicAutocompletion: true,\n    enableLiveAutocompletion: true\n  });\n\n  module.exports = function() {\n    return {\n      aceEditor: function() {\n        return aceEditor;\n      },\n      initSession: function(content, mode) {\n        var session;\n        session = ace.createEditSession(content);\n        session.setMode(\"ace/mode/\" + mode);\n        session.setUseSoftTabs(true);\n        session.setTabSize(2);\n        aceEditor.setOptions({\n          highlightActiveLine: true\n        });\n        return session;\n      }\n    };\n  };\n\n}).call(this);\n",
+      "type": "blob"
+    },
     "main": {
       "path": "main",
-      "content": "(function() {\n  var Postmaster, Template, aceShim, execWithContext, postmaster, remoteProxy, style,\n    __slice = [].slice;\n\n  style = document.createElement('style');\n\n  style.innerHTML = require(\"./style\");\n\n  document.head.appendChild(style);\n\n  Template = require(\"./template\");\n\n  document.body.appendChild(Template({\n    run: function() {\n      var program;\n      program = CoffeeScript.compile(editor.getValue(), {\n        bare: true\n      });\n      console.log(program);\n      execWithContext(program, {\n        module: {\n          remote: remoteProxy\n        }\n      });\n      return Function();\n    }\n  }));\n\n  aceShim = require(\"./ace-shim\")();\n\n  global.editor = aceShim.aceEditor();\n\n  editor.setSession(aceShim.initSession(\"alert 'hello'\", \"coffee\"));\n\n  editor.focus();\n\n  Postmaster = require(\"postmaster\");\n\n  postmaster = Postmaster();\n\n  postmaster.invokeRemote('ready');\n\n  execWithContext = function(program, context) {\n    var args, module, values, _ref;\n    if (context == null) {\n      context = {};\n    }\n    module = (_ref = context.module) != null ? _ref : {};\n    args = Object.keys(context);\n    values = args.map(function(name) {\n      return context[name];\n    });\n    return Function.apply(null, __slice.call(args).concat([program])).apply(module, values);\n  };\n\n  remoteProxy = new Proxy(postmaster, {\n    get: function(target, property, receiver) {\n      return target[property] || function() {\n        var args;\n        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n        return target.invokeRemote.apply(target, [property].concat(__slice.call(args)));\n      };\n    }\n  });\n\n}).call(this);\n",
+      "content": "(function() {\n  var Postmaster, Template, aceShim, execWithContext, postmaster, remoteProxy, style,\n    __slice = [].slice;\n\n  style = document.createElement('style');\n\n  style.innerHTML = require(\"./style\");\n\n  document.head.appendChild(style);\n\n  Template = require(\"./template\");\n\n  document.body.appendChild(Template({\n    run: function() {\n      var program;\n      program = CoffeeScript.compile(editor.getValue(), {\n        bare: true\n      });\n      console.log(program);\n      execWithContext(program, {\n        module: remoteProxy\n      });\n      return Function();\n    }\n  }));\n\n  aceShim = require(\"./ace-shim\")();\n\n  global.editor = aceShim.aceEditor();\n\n  editor.setSession(aceShim.initSession(\"alert 'hello'\", \"coffee\"));\n\n  editor.focus();\n\n  Postmaster = require(\"postmaster\");\n\n  postmaster = Postmaster();\n\n  postmaster.invokeRemote('ready');\n\n  execWithContext = function(program, context) {\n    var args, module, values, _ref;\n    if (context == null) {\n      context = {};\n    }\n    module = (_ref = context.module) != null ? _ref : {};\n    args = Object.keys(context);\n    values = args.map(function(name) {\n      return context[name];\n    });\n    return Function.apply(null, __slice.call(args).concat([program])).apply(module, values);\n  };\n\n  remoteProxy = new Proxy(postmaster, {\n    get: function(target, property, receiver) {\n      return target[property] || function() {\n        var args;\n        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n        return target.invokeRemote.apply(target, [property].concat(__slice.call(args)));\n      };\n    }\n  });\n\n}).call(this);\n",
       "type": "blob"
     },
     "pixie": {
       "path": "pixie",
       "content": "module.exports = {\"title\":\"Coffee Console\",\"description\":\"An embeddable CoffeeScirpt console.\",\"version\":\"0.1.0\",\"entryPoint\":\"main\",\"remoteDependencies\":[\"https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.4/ace.js\",\"https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.4/ext-language_tools.js\",\"https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js\"],\"dependencies\":{\"postmaster\":\"distri/postmaster:v0.5.0\"}};",
-      "type": "blob"
-    },
-    "ace-shim": {
-      "path": "ace-shim",
-      "content": "(function() {\n  var aceEditor;\n\n  ace.require(\"ace/ext/language_tools\");\n\n  aceEditor = ace.edit(\"ace\");\n\n  aceEditor.$blockScrolling = Infinity;\n\n  aceEditor.setOptions({\n    fontSize: \"16px\",\n    enableBasicAutocompletion: true,\n    enableLiveAutocompletion: true\n  });\n\n  module.exports = function() {\n    return {\n      aceEditor: function() {\n        return aceEditor;\n      },\n      initSession: function(content, mode) {\n        var session;\n        session = ace.createEditSession(content);\n        session.setMode(\"ace/mode/\" + mode);\n        session.setUseSoftTabs(true);\n        session.setTabSize(2);\n        aceEditor.setOptions({\n          highlightActiveLine: true\n        });\n        return session;\n      }\n    };\n  };\n\n}).call(this);\n",
       "type": "blob"
     },
     "style": {
