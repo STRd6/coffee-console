@@ -8,9 +8,8 @@ document.body.appendChild Template
   run: ->
     program = CoffeeScript.compile editor.getValue(), bare: true
     console.log program
-    execWithContext program, 
-      module:
-        remote: remoteProxy
+    execWithContext program,
+      module: remoteProxy
 
     Function()
 
